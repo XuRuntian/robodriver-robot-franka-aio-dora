@@ -121,7 +121,7 @@ class FrankaAioDoraRobotNode(DoraRobotNode):
             elif encoding in ["jpeg", "jpg", "jpe", "bmp", "webp", "png"]:
                 frame = cv2.imdecode(data, cv2.IMREAD_COLOR)
             elif encoding == "mono16":
-                frame = data # 深度数据
+                frame = data.reshape(height,width) # 深度数据
         except Exception as e:
             logger.error(f"Image decode error ({encoding}): {str(e)}")
 

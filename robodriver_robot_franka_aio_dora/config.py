@@ -59,12 +59,12 @@ class FrankaAioDoraRobotConfig(RobotConfig):
                 width=640,
                 height=480,
             ),
-            # "image_wrist_depth": OpenCVCameraConfig(
-            #     index_or_path=2,
-            #     fps=30,
-            #     width=640,
-            #     height=480,
-            # ),
+            "image_wrist_depth": OpenCVCameraConfig(
+                index_or_path=2,
+                fps=30,
+                width=640,
+                height=480,
+            ),
 
         }
     )

@@ -102,21 +102,14 @@ class FrankaAioDoraRobotStatus(RobotStatus):
 
         self.specifications.arm = ArmStatus(
             information=[
-                # ArmInfo(
-                #     name="leader",
-                #     type="realman 主臂 7DOF",
-                #     start_pose=[],
-                #     joint_p_limit = [169.0, 102.0, 169.0, 52.0, 169.0, 117.0, 169.0],
-                #     joint_n_limit = [-169.0, -102.0, -169.0, -167.0, -169.0, -87.0, -169.0],
-                #     is_connect=False
-                # ),
-                # ArmInfo(
-                #     name="follower",
-                #     type="realman 从臂 7DOF",
-                #     start_pose=[],
-                #     joint_p_limit = [169.0, 102.0, 169.0, 52.0, 169.0, 117.0, 169.0],
-                #     joint_n_limit = [-169.0, -102.0, -169.0, -167.0, -169.0, -87.0, -169.0],
-                #     is_connect=False
-                # ),
+
+                ArmInfo(
+                    name="franka_aio",
+                    type="franka 从臂 7DOF",
+                    start_pose=[],
+                    joint_p_limit = [169.0, 102.0, 169.0, 52.0, 169.0, 117.0, 169.0],
+                    joint_n_limit = [-169.0, -102.0, -169.0, -167.0, -169.0, -87.0, -169.0],
+                    is_connect=False
+                ),
             ]
         )

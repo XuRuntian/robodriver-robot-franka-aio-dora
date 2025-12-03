@@ -2,6 +2,7 @@ import time
 import torch
 import logging_mp
 import numpy as np
+import Rotation as R
 
 from typing import Any
 from functools import cached_property
@@ -425,35 +426,24 @@ class FrankaAioDoraRobot(Robot):
                 f"{self} is not connected. You need to run `robot.connect()`."
             )
 
-        try:
-            # 提取所有值（按固定顺序），每个值是tensor，转为标量后组成列表
-            action_values = [v.item() for v in action.values()]
-            # 转换为张量（形状与原顺序一致：7关节+3位姿+3欧拉角+2夹爪=15个元素）
-            action_tensor = torch.tensor(action_values)
-        except Exception as e:
-            raise(f"字典转张量失败: {e}（请确认字典顺序是否正确）")
-        
-        offset = 7
-        eef_offset = 6
-        action_sent = []  
-        for name in self.follower_arms:
-            goal_eef = action_tensor[0+offset:0+eef_offset+offset]
-            goal_eef_np = goal_eef.detach().cpu().numpy()
-            pos_xyz = goal_eef_np[:3]
-            euler_rpy = goal_eef_np[3:]
-            try:
 
-                rotation = R.from_euler(seq="xyz", angles=euler_rpy)
-                quat_qxqyqw = rotation.as_quat()  
-            except Exception as e:
-                raise ValueError(f"goal_eef 欧拉角转四元数失败：{e}（检查欧拉角单位是否为弧度）")
+        action_values = [v.item() for v in action.values()]
+
+        goal_eef = action_values[8:]
+        pos_xyz = goal_eef[:3]
+        euler_rpy = goal_eef[3:]
+        try:
+
+            rotation = R.from_euler(seq="xyz", angles=euler_rpy)
+            quat_qxqyqw = rotation.as_quat()  
+        except Exception as e:
+            raise ValueError(f"goal_eef 欧拉角转四元数失败：{e}（检查欧拉角单位是否为弧度）")
         
         goal_eef_quat = np.concatenate([pos_xyz, quat_qxqyqw])  # shape: (7,)
-        goal_gripper = action_tensor[-2:]
-        gripper_norm = goal_gripper[0].item()  
-        gripper_val = int(np.clip(gripper_norm * 255, 0, 255))  # 映射到0-255整数
-        goal_pos = [goal_eef, goal_gripper]   
-
+        goal_gripper = [7]
+        gripper_val = int(np.clip(goal_gripper * 255, 0, 255))  # 映射到0-255整数
+        goal_pos = [goal_eef_quat, gripper_val]   
+        # 回放关节使用四元数
         self.robot_dora_node.dora_send(f"action_joint", goal_pos) 
         
         return {f"{motor}.pos": val for motor, val in action.items()}
