@@ -5,7 +5,7 @@ nodes:
       tick: dora/timer/millis/33
     outputs:
       - image
-      # - image_depth
+      - image_depth
     env:
       DEVICE_SERIAL: 336222071127
 
@@ -24,7 +24,7 @@ nodes:
     path: dynamic
     inputs:
       image_wrist: camera_wrist/image
-      # image_wrist_depth: camera_wrist/image_depth
+      image_wrist_depth: camera_wrist/image_depth
       follower_arm_joint: arm_franka_aio/jointstate
     outputs:
       - action_joint

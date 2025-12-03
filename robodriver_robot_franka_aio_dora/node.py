@@ -120,6 +120,8 @@ class FrankaAioDoraRobotNode(DoraRobotNode):
                 frame = data.reshape((height, width, 3))
             elif encoding in ["jpeg", "jpg", "jpe", "bmp", "webp", "png"]:
                 frame = cv2.imdecode(data, cv2.IMREAD_COLOR)
+            elif encoding == "mono16":
+                frame = data # 深度数据
         except Exception as e:
             logger.error(f"Image decode error ({encoding}): {str(e)}")
 
@@ -130,7 +132,6 @@ class FrankaAioDoraRobotNode(DoraRobotNode):
     def _process_joint(self, event_id, data):
         """处理关节数据"""
         if data is not None:
-            # scalar_value = float(data.item()) 
             self.recv_joint[event_id] = data # 接受的是列表
             self.recv_joint_status[event_id] = CONNECT_TIMEOUT_FRAME
     def start(self):
