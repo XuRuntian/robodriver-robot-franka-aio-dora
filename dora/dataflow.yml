@@ -1,0 +1,33 @@
+nodes:
+  - id: camera_wrist
+    path: nodes/dora_camera_realsense.py
+    inputs:
+      tick: dora/timer/millis/33
+    outputs:
+      - image
+      - image_depth
+    env:
+      DEVICE_SERIAL: 336222071127
+
+  - id: arm_franka_aio
+    path: nodes/dora-arm-franka/dora_arm_franka/main.py
+    build: pip install -e nodes/dora-arm-franka
+    inputs:
+      get_joint: dora/timer/millis/33
+      action_joint: franka_aio_dora/action_joint
+    outputs:
+      - jointstate
+    env:
+      url: http://127.0.0.2:5000/
+
+  - id: franka_aio_dora
+    path: dynamic
+    inputs:
+      image_wrist: camera_wrist/image
+      image_wrist_depth: camera_wrist/image_depth
+      follower_arm_joint: arm_franka_aio/jointstate
+    outputs:
+      - action_joint
+
+
+

@@ -1,0 +1,79 @@
+import abc
+from dataclasses import dataclass, field
+from typing import Sequence, Dict
+
+import draccus
+
+# from operating_platform.robot.robots.com_configs.cameras import (
+#     CameraConfig,
+#     OpenCVCameraConfig,
+# )
+
+# from operating_platform.robot.robots.com_configs.motors import (
+#     FeetechMotorsBusConfig,
+#     MotorsBusConfig,
+# )
+
+# from operating_platform.robot.robots.configs import RobotConfig, ManipulatorRobotConfig
+
+from lerobot.robots.config import RobotConfig
+
+from lerobot.cameras import CameraConfig
+from lerobot.cameras.configs import ColorMode
+from lerobot.cameras.opencv import OpenCVCameraConfig
+from lerobot.motors import Motor, MotorNormMode
+
+
+@RobotConfig.register_subclass("franka_aio_dora")
+@dataclass
+class FrankaAioDoraRobotConfig(RobotConfig):
+    use_degrees = True
+    norm_mode_body = MotorNormMode.DEGREES if use_degrees else MotorNormMode.RANGE_M100_100
+ 
+    motors: Dict[str, Motor] = field(
+        default_factory=lambda norm_mode_body=norm_mode_body: {
+            "follower_arm": {
+                "joint_1": Motor(1, "franka", norm_mode_body),
+                "joint_2": Motor(2, "franka", norm_mode_body),
+                "joint_3": Motor(3, "franka", norm_mode_body),
+                "joint_4": Motor(4, "franka", norm_mode_body),
+                "joint_5": Motor(5, "franka", norm_mode_body),
+                "joint_6": Motor(6, "franka", norm_mode_body),
+                "joint_7": Motor(7, "franka", norm_mode_body),
+                "gripper": Motor(8, "franka", norm_mode_body),
+                "pose_x":  Motor(9, "franka", norm_mode_body),
+                "pose_y":  Motor(10, "franka", norm_mode_body),
+                "pose_z":  Motor(11, "franka", norm_mode_body),
+                "pose_rx":  Motor(12, "franka", norm_mode_body),
+                "pose_ry":  Motor(13, "franka", norm_mode_body),
+                "pose_rz":  Motor(14, "franka", norm_mode_body),
+            },
+        }
+    )
+
+    cameras: Dict[str, CameraConfig] = field(
+        default_factory=lambda: {
+            "image_wrist": OpenCVCameraConfig(
+                index_or_path=1,
+                fps=30,
+                width=640,
+                height=480,
+            ),
+            "image_wrist_depth": OpenCVCameraConfig(
+                index_or_path=2,
+                fps=30,
+                width=640,
+                height=480,
+            ),
+
+        }
+    )
+
+    use_videos: bool = False
+
+    microphones: Dict[str, int] = field(
+        default_factory=lambda: {
+        }
+    )
+    
+    # super().__post_init__()
