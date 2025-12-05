@@ -2,7 +2,7 @@ import time
 import torch
 import logging_mp
 import numpy as np
-import Rotation as R
+from scipy.spatial.transform import Rotation as R
 
 from typing import Any
 from functools import cached_property
@@ -438,14 +438,13 @@ class FrankaAioDoraRobot(Robot):
             quat_qxqyqw = rotation.as_quat()  
         except Exception as e:
             raise ValueError(f"goal_eef 欧拉角转四元数失败：{e}（检查欧拉角单位是否为弧度）")
-        
         goal_eef_quat = np.concatenate([pos_xyz, quat_qxqyqw])  # shape: (7,)
-        goal_gripper = [7]
+        goal_gripper = action_values[7]
+        print(f"[DEBUG] goal_gripper type: {type(goal_gripper)}, shape: {getattr(goal_gripper, 'shape', 'N/A')}, value: {goal_gripper}")
         gripper_val = int(np.clip(goal_gripper * 255, 0, 255))  # 映射到0-255整数
-        goal_pos = [goal_eef_quat, gripper_val]   
+        goal_pos = goal_eef_quat.tolist() + [float(gripper_val)]
         # 回放关节使用四元数
         self.robot_dora_node.dora_send(f"action_joint", goal_pos) 
-        
         return {f"{motor}.pos": val for motor, val in action.items()}
 
     def update_status(self) -> str:

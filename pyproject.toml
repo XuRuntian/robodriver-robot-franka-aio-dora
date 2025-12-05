@@ -15,7 +15,8 @@ dependencies = [
     "dora-rs-cli (>=0.3.11,<0.4.0)",
     "draccus>=0.9.3",
     "logging_mp",
-    "pyrealsense2",          
+    "pyrealsense2",   
+    "scipy",       
 ]
 
 [tool.setuptools.packages.find]
