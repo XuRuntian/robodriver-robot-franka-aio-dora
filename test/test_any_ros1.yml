@@ -1,0 +1,31 @@
+nodes:
+  # === 实例 1: 采集手腕相机图像 ===
+  - id: bridge_cam_wrist
+    path: ../dora/nodes/dora_any_ros1.py
+    inputs:
+      tick: dora/timer/millis/33  # 30 FPS
+    outputs:
+      - data_out  # 统一输出端口名，或者你也可以在env里定制
+    env:
+      # ROS 配置
+      ROS_TOPIC: "/camera/color/image_raw"
+      MSG_TYPE: "sensor_msgs/Image"
+      # 数据处理配置
+      DATA_TYPE: "IMAGE"       # 告诉脚本这是一个图像，需要特殊处理
+      ENCODING: "rgb8"         # 目标编码
+      OUTPUT_NAME: "data_out"  # 对应上面的 outputs
+  - id: bridge_encoder
+    path: ../dora/nodes/dora_any_ros1.py
+    inputs:
+      tick: dora/timer/millis/33
+    outputs:
+      - encoder_val
+    env:
+      # ROS 配置
+      ROS_TOPIC: "/encoder"
+      MSG_TYPE: "std_msgs/Float32"
+
+      # 提取配置
+      DATA_TYPE: "ATTRIBUTE"   # 这是一个属性，不是图像
+      EXTRACT_PATH: "data"     # <--- 关键：rostopic echo 看到的字段名
+      OUTPUT_NAME: "encoder_val"

@@ -1,4 +1,3 @@
-import abc
 from dataclasses import dataclass, field
 from typing import Sequence, Dict
 
@@ -30,7 +29,7 @@ class FrankaAioDoraRobotConfig(RobotConfig):
     use_degrees = True
     norm_mode_body = MotorNormMode.DEGREES if use_degrees else MotorNormMode.RANGE_M100_100
  
-    motors: Dict[str, Motor] = field(
+    follower_motors: Dict[str, Motor] = field(
         default_factory=lambda norm_mode_body=norm_mode_body: {
             "follower_arm": {
                 "joint_1": Motor(1, "franka", norm_mode_body),
@@ -46,26 +45,53 @@ class FrankaAioDoraRobotConfig(RobotConfig):
                 "pose_z":  Motor(11, "franka", norm_mode_body),
                 "pose_rx":  Motor(12, "franka", norm_mode_body),
                 "pose_ry":  Motor(13, "franka", norm_mode_body),
-                "pose_rz":  Motor(14, "franka", norm_mode_body),
+                "pose_rz":  Motor(14, "franka", norm_mode_body),# 欧拉角
+                "quaternion_w": Motor(15, "franka", norm_mode_body),
+                "quaternion_x": Motor(16, "franka", norm_mode_body),
+                "quaternion_y": Motor(17, "franka", norm_mode_body),
+                "quaternion_z": Motor(18, "franka", norm_mode_body),
+
             },
+        },
+
+    )
+    leader_motors: Dict[str, Motor] = field(
+        default_factory = lambda norm_mode_body=norm_mode_body: {
+            "leader_arm": {
+                "pose_x":  Motor(1, "franka", norm_mode_body),
+                "pose_y":  Motor(2, "franka", norm_mode_body),
+                "pose_z":  Motor(3, "franka", norm_mode_body),
+                "quaternion_w": Motor(4, "franka", norm_mode_body),
+                "quaternion_x": Motor(5, "franka", norm_mode_body),
+                "quaternion_y": Motor(6, "franka", norm_mode_body),
+                "quaternion_z": Motor(7, "franka", norm_mode_body),
+                "gripper": Motor(8, "franka", norm_mode_body),
+
+            }
         }
     )
 
     cameras: Dict[str, CameraConfig] = field(
         default_factory=lambda: {
-            "image_wrist": OpenCVCameraConfig(
+            "image_wrist_0": OpenCVCameraConfig(
                 index_or_path=1,
                 fps=30,
                 width=640,
                 height=480,
             ),
-            "image_wrist_depth": OpenCVCameraConfig(
+
+            "image_wrist_1": OpenCVCameraConfig(
                 index_or_path=2,
                 fps=30,
                 width=640,
                 height=480,
             ),
-
+            "image_wrist_2": OpenCVCameraConfig(
+                index_or_path=3,
+                fps=30,
+                width=640,
+                height=480,
+            ),
         }
     )
 

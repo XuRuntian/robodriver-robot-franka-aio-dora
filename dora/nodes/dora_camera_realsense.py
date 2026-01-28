@@ -91,6 +91,7 @@ def main():
                 # Get the right encoding
                 if encoding == "bgr8":
                     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                
                 elif encoding in ["jpeg", "jpg", "jpe", "bmp", "webp", "png"]:
                     ret, frame = cv2.imencode("." + encoding, frame)
                     if not ret:

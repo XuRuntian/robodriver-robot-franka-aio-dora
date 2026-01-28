@@ -1,3 +1,0 @@
-[submodule "dora/nodes/dora-arm-franka"]
-	path = dora/nodes/dora-arm-franka
-	url = https://github.com/BAAI-EI-DATA/dora-arm-franka.git
